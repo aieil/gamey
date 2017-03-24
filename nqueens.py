@@ -12,8 +12,14 @@ def solveLine(line):
         rows[queen] += 1 #increments when a queen is placed in that row
         if columns[queen] == 0:
             columns = findColumns(queen, columns)
-               
-# for i in columns, for h in rows, draw X if h = 1, else draw _
+
+def printGrid(rows, columns):
+    for i in columns:
+        for h in rows:
+            if rows[h] == 1:
+                print q
+            else:
+                print x
     
 def main():
     with open('nqueens.txt') as file:
