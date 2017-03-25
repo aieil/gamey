@@ -2,7 +2,8 @@ from collections import namedtuple
 
 Dir = namedtuple("Dir", ["char", "dy", "dx"])
 
-class Maze:
+
+class Maze(object):
     START = "S"
     END   = "G"
     WALL  = "#"
@@ -40,6 +41,8 @@ class Maze:
         # not found!
         raise ValueError("Start location not found")
 
+
+
     def solve(self, y, x):
         if self.maze[y][x] == Maze.END:
             # base case - endpoint has been found
@@ -47,7 +50,7 @@ class Maze:
         else:
             print ("this is where the a* and greedy algo go")
 
-    
+
 def main():
     maze = Maze.load_maze("pathfinding_a.txt")
 
