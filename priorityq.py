@@ -18,7 +18,7 @@ class PQ(object):
 
     def pop(self):
         try:
-            return heapq.heappop(self.Q)
+            return heapq.heappop(self.Q)[1]
             self.length -= 1
         except IndexError as e:
             # this would mean that there is no solution to the problem.
