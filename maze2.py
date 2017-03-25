@@ -30,6 +30,7 @@ class JLMaze(object):
         cost_at = {}
         came_from[self.start] = None
         cost_at[self.start] = 0
+
         current = None
         while not frontier.isEmpty():
             current = frontier.pop()
@@ -50,17 +51,36 @@ class JLMaze(object):
             print("no solution!!!")
             return None
         # now reconstruct the path.
-        return reconstruct_path(came_from)
+        return self.reconstruct_path(came_from)
 
 
-    def greedy(self, neighbourMethod):
+    def greedy(self, neighborMethod):
         frontier = PQ()
         frontier.push(self.start)
         came_from = {}
         came_from[self.start] = None
 
+        current = None
+        while not frontier.isEmpty():
+            current = frontier.pop()
+            if current == self.goal:
+                print("Current equals goal Breaking out of loop.")
+                break
+            for neighbor in neighborMethod(current):
+                if neighbor not in came_from:
+                    priority = manhattan(neighbor, self.goal)
+                    frontier.push(neighbor, priority)
+                    came_from[neighbor] = current
 
-    def reconstruct_path(came_from):
+        if current != self.goal:
+            print("no solution!!!")
+            return None
+
+        return self.reconstruct_path(came_from)
+
+
+
+    def reconstruct_path(self, came_from):
         current = self.goal
         path = []
         path.append(current)
@@ -96,18 +116,50 @@ class JLMaze(object):
 
         return neighbors
 
+    def neighborhood_partB(self, square):
+        neighbors = []
+        y, x = square
+        # squares from part A:
+        if self.maze[y-1][x] in "_G":
+            neighbors.append((y-1, x))
 
-def manhattan(pa, pb): # a to b
-    ay, ax = pa
-    by, bx = pb
+        if self.maze[y + 1][x] in "_G":
+            neighbors.append((y + 1, x))
+
+        if self.maze[y][x - 1] in "_G":
+            neighbors.append((y, x - 1))
+
+        if self.maze[y][x + 1] in "_G":
+            neighbors.append((y, x + 1))
+
+        # additional squares, part B
+        if self.maze[y-1][x - 1] in "_G":
+            neighbors.append((y-1, x - 1))
+
+        if self.maze[y-1][x + 1] in "_G":
+            neighbors.append((y-1, x + 1))
+
+        if self.maze[y + 1][x - 1] in "_G":
+            neighbors.append((y + 1, x - 1))
+
+        if self.maze[y + 1][x + 1] in "_G":
+            neighbors.append((y + 1, x + 1))
+
+        return neighbors
+
+
+
+
+
+def manhattan(pointA, pointB): # a to b
+    ay, ax = pointA
+    by, bx = pointB
     return abs(by - ay) + abs(bx - ax)
-
-
 
 def main():
     m = JLMaze.load_maze("pathfinding_a.txt")
     print(m.Astar(m.neighborhood_partA))
-
+    print(m.greedy(m.neighborhood_partA))
 
 if __name__ == '__main__':
     main()
