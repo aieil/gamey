@@ -19,12 +19,12 @@ class JLMaze(object):
 
         # find the starting and goal indices in the maze grid.
         y = 1
-        while y < self.height - 1 and not self.start and not self.goal:
+        while y < self.height and (not self.start or not self.goal):
             x = 1
-            while x < self.width - 1 and not self.start and not self.goal:
+            while x < self.width and (not self.start or not self.goal):
                 if maze[y][x] == 'S':
                     self.start = (y, x)
-                elif maze[y][x] = 'G':
+                elif maze[y][x] == 'G':
                     self.goal = (y, x)
                 x += 1
             y += 1
@@ -40,17 +40,18 @@ class JLMaze(object):
         while not frontier.isEmpty():
             current = frontier.pop()
 
-            if current = self.goal:
+            if current == self.goal:
                 break
 
-            for
 
+
+    @classmethod
     def load_maze(cls, fname):
         with open(fname) as inf:
             maze = [line.rstrip("\r\n") for line in inf]
         return cls(maze)
 
-    def neighborhood_partA(y, x):
+    def neighborhood_partA(self, y, x):
         neighbors = []
         # graph may have up to 4 neighbours.
         # directly above
