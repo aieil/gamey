@@ -57,39 +57,3 @@ def find_and_group(lis, oper, groupsize=3):
             lis[i] = [lis[j] for j in range(i, i+groupsize)]
             for j in range(groupsize-1): del lis[i+1]
         else: i += 1
-
-# convert edge set to matrix
-def edges_to_matrix(expr):
-    vertices = {}
-
-    # get list of edges by vertex
-    for edge in expr:
-        if edge[0] not in vertices:
-            vertices[edge[0]] = [edge[1]]
-        else:
-            vertices[edge[0]].append(edge[1])
-
-        if edge[1] not in vertices:
-            vertices[edge[1]] = [edge[0]]
-        else:
-            vertices[edge[1]].append(edge[0])
-
-    # generate n*n matrix
-    mat = [[0 for edges in vertices] for edges in vertices]
-
-    # used to index matrix
-    vertices_list = sorted(vertices)
-    i = 0
-
-    # traverse list of vertices
-    while i < len(vertices_list):
-        j = 0
-        # traverse the list assigned to the current vertex
-        while j < len(vertices[vertices_list[i]]):
-            # get the corresponding index of the connecting node k
-            # set mat[i][k] = 1
-            mat[i][vertices_list.index(vertices[vertices_list[i]][j])] = 1
-            j += 1
-        i += 1
-
-    return mat, vertices_list
