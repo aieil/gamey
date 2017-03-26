@@ -65,7 +65,7 @@ class Maze(object):
         while not frontier.isEmpty():
             current = frontier.pop()
             if current == self.goal:
-                print("Current equals goal Breaking out of loop.")
+                #print("Current equals goal Breaking out of loop.")
                 break
             for neighbor in neighborMethod(current):
                 if neighbor not in came_from:
@@ -197,19 +197,43 @@ def main():
     #m = JLMaze.load_maze("pathfinding_a.txt")
     #print(m.Astar(m.neighborhood_partA))
     #print(m.greedy(m.neighborhood_partA))
-    mazes = load_maze_file("pathfinding_grids.txt")
-    for maze in mazes:
-        m = Maze(maze)
-        pprint(m.maze)
-        print("part A")
-        print("A*")
-        AstarRslt = m.Astar(m.neighborhood_partA)
-        AstarOut = m.path_output(AstarRslt)
-        pprint(AstarOut)
-        print("Greedy")
-        greedyRslt = m.greedy(m.neighborhood_partA)
-        greedyOut = m.path_output(greedyRslt)
-        pprint(greedyOut)
+
+    # part A
+    mazes = load_maze_file("pathfinding_a.txt")
+    with open("pathfinding_a_out.txt", 'w') as outfile:
+        for maze in mazes:
+            m = Maze(maze)
+            outfile.write("A*\n")
+            AstarRslt = m.Astar(m.neighborhood_partA)
+            AstarOut = m.path_output(AstarRslt)
+            # have to add \n's to these.
+            outfile.writelines((line + "\n" for line in AstarOut))
+            outfile.write("\n")
+            outfile.write("Greedy\n")
+            greedyRslt = m.greedy(m.neighborhood_partA)
+            greedyOut = m.path_output(greedyRslt)
+            outfile.writelines((line + "\n" for line in greedyOut))
+            #outfile.writelines(greedyOut)
+            outfile.write("\n")
+
+    # part B
+    mazes = load_maze_file("pathfinding_b.txt")
+    with open("pathfinding_b_out.txt", 'w') as outfile:
+        for maze in mazes:
+            m = Maze(maze)
+            outfile.write("A*\n")
+            AstarRslt = m.Astar(m.neighborhood_partB)
+            AstarOut = m.path_output(AstarRslt)
+            # have to add \n's to these.
+            outfile.writelines((line + "\n" for line in AstarOut))
+            outfile.write("\n")
+            outfile.write("Greedy\n")
+            greedyRslt = m.greedy(m.neighborhood_partB)
+            greedyOut = m.path_output(greedyRslt)
+            outfile.writelines((line + "\n" for line in greedyOut))
+            #outfile.writelines(greedyOut)
+            outfile.write("\n")
+
 
 if __name__ == '__main__':
     main()
