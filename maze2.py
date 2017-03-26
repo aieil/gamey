@@ -1,8 +1,10 @@
 
 from priorityq import PQ
+from pprint import pprint
+from copy import deepcopy
 
 
-class JLMaze(object):
+class Maze(object):
     """A maze representation using a simple list of strings."""
     def __init__(self, maze):
         self.maze = maze
@@ -36,7 +38,7 @@ class JLMaze(object):
             current = frontier.pop()
 
             if current == self.goal:
-                print("Current equals goal Breaking out of loop.")
+                #print("Current equals goal Breaking out of loop.")
                 break
 
             for neighbor in neighborMethod(current):
@@ -52,7 +54,6 @@ class JLMaze(object):
             return None
         # now reconstruct the path.
         return self.reconstruct_path(came_from)
-
 
     def greedy(self, neighborMethod):
         frontier = PQ()
@@ -81,6 +82,7 @@ class JLMaze(object):
 
 
     def reconstruct_path(self, came_from):
+        """Works backwards from the goal to determine the path took by the algorithm from start."""
         current = self.goal
         path = []
         path.append(current)
@@ -89,6 +91,23 @@ class JLMaze(object):
             path.append(current)
         path.reverse()
         return path
+
+
+    def path_output(self, path):
+        """
+        Sets the nodes visited in the path passed as 'path' to the character P
+        in a copy of the text representation of the maze and returns it.
+        """
+        mazeOut = deepcopy(self.maze)
+        for y, x in path:
+            if mazeOut[y][x] not in 'SG':
+                #mazeOut[y][x] = 'P'
+                # converting the line to replace characters, at indices,
+                # since strings are immutable.
+                strlist = list(mazeOut[y])
+                strlist[x] = 'P'
+                mazeOut[y] = ''.join(strlist)
+        return mazeOut
 
 
     @classmethod
@@ -148,18 +167,49 @@ class JLMaze(object):
         return neighbors
 
 
-
-
-
 def manhattan(pointA, pointB): # a to b
     ay, ax = pointA
     by, bx = pointB
     return abs(by - ay) + abs(bx - ax)
 
+def load_maze_file(filename):
+    # load multiple mazes from a file in the format specified in the assignment.
+    with open(filename) as inf:
+        lines = [line.rstrip("\r\n") for line in inf]
+    mazes = []
+    maze = []
+    for line in lines:
+        if line == '':
+            # if the line is an empty string, that means it's the end of
+            # the current maze.
+            if maze != []: # skip multiple blank lines
+                mazes.append(maze)
+                maze = []
+        else:
+            maze.append(line)
+    if maze != []: # situation where the file has no blank lines at end.
+        mazes.append(maze)
+    return mazes
+
+
+
 def main():
-    m = JLMaze.load_maze("pathfinding_a.txt")
-    print(m.Astar(m.neighborhood_partA))
-    print(m.greedy(m.neighborhood_partA))
+    #m = JLMaze.load_maze("pathfinding_a.txt")
+    #print(m.Astar(m.neighborhood_partA))
+    #print(m.greedy(m.neighborhood_partA))
+    mazes = load_maze_file("pathfinding_grids.txt")
+    for maze in mazes:
+        m = Maze(maze)
+        pprint(m.maze)
+        print("part A")
+        print("A*")
+        AstarRslt = m.Astar(m.neighborhood_partA)
+        AstarOut = m.path_output(AstarRslt)
+        pprint(AstarOut)
+        print("Greedy")
+        greedyRslt = m.greedy(m.neighborhood_partA)
+        greedyOut = m.path_output(greedyRslt)
+        pprint(greedyOut)
 
 if __name__ == '__main__':
     main()
